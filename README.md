@@ -43,3 +43,49 @@ https://www.google.com
 sudo apt update
 sudo apt install curl mailutils bc -y
 ```
+
+### Step 4 — Build the basic monitor
+
+- Create:
+```bash
+vi monitor.sh
+```
+
+- Put this in it:
+```bash
+#!/bin/bash
+
+# Get the directory where the script is located
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Website to test
+URL="https://example.com"
+
+# Check HTTP status code
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+    --connect-timeout 10 \
+    --max-time 30 \
+    "$URL")
+
+if [ "$HTTP_CODE" = "200" ]; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') | $URL | UP | HTTP=$HTTP_CODE"
+else
+    echo "$(date '+%Y-%m-%d %H:%M:%S') | $URL | DOWN | HTTP=$HTTP_CODE"
+fi
+```
+
+- Make it executable:
+```bash
+chmod +x monitor.sh
+```
+
+- Run it:
+```bash
+./monitor.sh
+```
+
+- You should see something similar to:
+```bash
+2026-08-22 10:15:32 | https://example.com | UP | HTTP=200
+```
+- Congratulations — you now have the basic monitoring system working.
