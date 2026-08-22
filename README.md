@@ -22,3 +22,24 @@ website-monitor/
 │   └── slow/
 └── tmp/
 ```
+
+### Step 2 — Create the website list
+
+- Create:
+```bash
+vi includes/sites
+```
+
+- For your first test, use websites that you control or public sites you are allowed to monitor. For example:
+```bash
+https://example.com
+https://www.google.com
+```
+
+### Step 3 — Install the required tools
+
+- We'll use curl, mailutils, and bc
+```bash
+sudo apt update
+sudo apt install curl mailutils bc -y
+```
