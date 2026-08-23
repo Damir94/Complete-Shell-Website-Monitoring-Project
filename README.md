@@ -88,4 +88,7 @@ chmod +x monitor.sh
 ```bash
 2026-08-22 10:15:32 | https://example.com | UP | HTTP=200
 ```
+
+<img width="858" height="106" alt="Screenshot 2026-08-23 at 9 15 45 AM" src="https://github.com/user-attachments/assets/a9d56545-1a10-46b8-a278-7236c55b8665" />
+
 - Congratulations — you now have the basic monitoring system working.
