@@ -212,3 +212,50 @@ https://this-domain-does-not-exist-123456.com
 ```
 
 <img width="1209" height="74" alt="Screenshot 2026-08-23 at 9 27 47 AM" src="https://github.com/user-attachments/assets/f395ff56-767f-4a27-aaac-89d507e3713f" />
+
+- Curl exit code 6 means it couldn't resolve the host. That's much more useful than simply saying:
+```bash
+Website is down.
+```
+
+### Step 8 — Add proper error messages
+- Now we'll make the monitoring system easier to understand.
+- Inside check_website(), after:
+```bash
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+```
+- add
+```bash
+ERROR_MESSAGE=""
+
+if [ "$EXIT_CODE" = "6" ]; then
+
+    ERROR_MESSAGE="Could not resolve host"
+
+elif [ "$EXIT_CODE" = "7" ]; then
+
+    ERROR_MESSAGE="Failed to connect to host"
+
+elif [ "$EXIT_CODE" = "28" ]; then
+
+    ERROR_MESSAGE="Connection timed out"
+
+elif [ "$EXIT_CODE" = "35" ]; then
+
+    ERROR_MESSAGE="SSL/TLS connection error"
+
+elif [ "$EXIT_CODE" = "60" ]; then
+
+    ERROR_MESSAGE="SSL certificate verification failed"
+
+elif [ "$EXIT_CODE" != "0" ]; then
+
+    ERROR_MESSAGE="Curl error"
+
+fi
+```
+- Then our log can tell us why the website failed.
+
+<img width="1221" height="73" alt="Screenshot 2026-08-23 at 9 41 00 AM" src="https://github.com/user-attachments/assets/50054307-c489-4ab8-a8c9-f2b6d2020ac7" />
+
+- This is much closer to real-world troubleshooting.
