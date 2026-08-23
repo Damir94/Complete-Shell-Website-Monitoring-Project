@@ -85,10 +85,107 @@ chmod +x monitor.sh
 ```
 
 - You should see something similar to:
-```bash
-2026-08-22 10:15:32 | https://example.com | UP | HTTP=200
-```
 
 <img width="858" height="106" alt="Screenshot 2026-08-23 at 9 15 45 AM" src="https://github.com/user-attachments/assets/a9d56545-1a10-46b8-a278-7236c55b8665" />
 
 - Congratulations — you now have the basic monitoring system working.
+
+### Step 5 — Make it monitor multiple websites
+- Now we'll replace the single hard-coded URL with the includes/sites file.
+- Edit:
+```bash
+vi monitor.sh
+```
+- Replace the contents with:
+```bash
+#!/bin/bash
+
+# Get the directory where the script is located
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Website list
+SITES_FILE="$DIR/sites"
+
+# Log file
+LOG_FILE="$DIR/logs/monitor.log"
+
+# Make sure the log directory exists
+mkdir -p "$DIR/logs"
+
+# Check whether the sites file exists
+if [ ! -f "$SITES_FILE" ]; then
+    echo "ERROR: Sites file not found: $SITES_FILE"
+    exit 1
+fi
+
+# Check a website
+check_website() {
+
+    local URL="$1"
+
+    # Skip empty lines
+    [ -z "$URL" ] && return
+
+    # Perform HTTP request
+    RESPONSE=$(curl \
+        --connect-timeout 10 \
+        --max-time 30 \
+        --retry 2 \
+        --retry-delay 2 \
+        -s \
+        -o /dev/null \
+        -w "%{http_code},%{exitcode},%{ssl_verify_result},%{time_total}" \
+        "$URL")
+
+    # Split response into variables
+    IFS=',' read -r HTTP_CODE EXIT_CODE SSL_RESULT RESPONSE_TIME <<< "$RESPONSE"
+
+    TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+
+    # Determine status
+    if [ "$EXIT_CODE" = "0" ] && [[ "$HTTP_CODE" =~ ^2[0-9][0-9]$ ]]; then
+
+        STATUS="UP"
+
+    elif [ "$EXIT_CODE" = "0" ]; then
+
+        STATUS="HTTP_ERROR"
+
+    else
+
+        STATUS="DOWN"
+
+    fi
+
+    # Create log entry
+    LOG_ENTRY="$TIMESTAMP | $URL | $STATUS | HTTP=$HTTP_CODE | CURL_EXIT=$EXIT_CODE | SSL=$SSL_RESULT | RESPONSE_TIME=${RESPONSE_TIME}s"
+
+    echo "$LOG_ENTRY"
+
+    # Write to log
+    echo "$LOG_ENTRY" >> "$LOG_FILE"
+}
+
+# Read and check every website
+while IFS= read -r URL; do
+
+    # Ignore empty lines
+    [ -z "$URL" ] && continue
+
+    # Ignore comments
+    [[ "$URL" =~ ^# ]] && continue
+
+    check_website "$URL"
+
+done < "$SITES_FILE"
+```
+
+- Run:
+```bash
+./monitor.sh
+```
+- You should get something like:
+
+<img width="1116" height="89" alt="Screenshot 2026-08-23 at 9 22 56 AM" src="https://github.com/user-attachments/assets/c14c3eb2-d170-464b-ac7b-c8fd223e595b" />
+
+
