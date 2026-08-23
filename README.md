@@ -188,4 +188,27 @@ done < "$SITES_FILE"
 
 <img width="1116" height="89" alt="Screenshot 2026-08-23 at 9 22 56 AM" src="https://github.com/user-attachments/assets/c14c3eb2-d170-464b-ac7b-c8fd223e595b" />
 
+### Step 6 — Check your log
+- Run
+```bash
+cat logs/monitor.log
+```
+- You now have persistent monitoring history.
 
+### Step 7 — Test a failure
+- This is important because you want to demonstrate that your monitoring system actually detects failures.
+- Temporarily change:
+```bash
+vi includes/sites
+```
+- to
+```bash
+https://example.com
+https://this-domain-does-not-exist-123456.com
+```
+- Run:
+```bash
+./monitor.sh
+```
+
+<img width="1209" height="74" alt="Screenshot 2026-08-23 at 9 27 47 AM" src="https://github.com/user-attachments/assets/f395ff56-767f-4a27-aaac-89d507e3713f" />
