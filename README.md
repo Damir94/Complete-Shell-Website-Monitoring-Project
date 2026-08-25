@@ -1,7 +1,6 @@
 # Complete-Shell-Website-Monitoring-Project
 
-- A lightweight website monitoring system built with Bash and cURL.
-- The system periodically checks multiple websites, validates HTTP status codes, measures response times, detects connectivity and SSL errors, records monitoring history, and sends alerts when failures occur.
+Built a lightweight Bash-based website monitoring and observability system that automatically checks multiple HTTP/HTTPS endpoints using cURL and Cron. Implemented HTTP status validation, SSL verification, DNS/connectivity error detection, response-time monitoring, persistent logging, alert throttling, and recovery notifications. Designed the system with configurable thresholds and modular components to demonstrate core DevOps monitoring and automation principles.
 
 ## Architecture
 
