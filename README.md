@@ -746,7 +746,71 @@ HTTP 200 → healthy
 HTTP 500 → server failure
 ```
 
-### Step 13 — Add cron automation
+### Step 13 — Add recovery detection
+- We want this to produce a recovery notification.:
+```bash
+DOWN
+DOWN
+DOWN
+UP
+```
+- Add a state directory:
+```bash
+mkdir -p tmp/status
+```
+- Then modify the script to maintain a state file for each website.
+- Inside check_website(), after:
+```bash
+local TIMESTAMP
+TIMESTAMP=$(get_timestamp)
+```
+- Add:
+```bash
+STATE_DIR="$TMP_DIR/status"
+
+mkdir -p "$STATE_DIR"
+
+SAFE_URL=$(echo "$URL" | sed 's|https\?://||; s|[^a-zA-Z0-9._-]|_|g')
+
+STATE_FILE="$STATE_DIR/$SAFE_URL"
+```
+- Then, after determining STATUS, add:
+```bash
+PREVIOUS_STATUS="UNKNOWN"
+
+if [ -f "$STATE_FILE" ]; then
+    PREVIOUS_STATUS=$(cat "$STATE_FILE")
+fi
+
+echo "$STATUS" > "$STATE_FILE"
+```
+- Then before the failure alert section:
+```bash
+if [ "$STATUS" = "UP" ] && [ "$PREVIOUS_STATUS" = "DOWN" ]; then
+
+    echo "$TIMESTAMP | $URL | RECOVERY" >> "$LOG_FILE"
+
+    send_recovery_alert "$URL"
+
+fi
+```
+- Now the system knows what happened previously.
+- For example:
+```bash
+First check:
+UNKNOWN → DOWN
+
+Second check:
+DOWN → DOWN
+
+Third check:
+DOWN → UP
+```
+- The third check triggers:
+```bash
+RECOVERY: https://example.com is back online.
+```
+### Step 14 — Add cron automation
 - Open cron:
 ```bash
 crontab -e
@@ -774,7 +838,7 @@ crontab -l
 
 <img width="1037" height="116" alt="Screenshot 2026-08-25 at 10 04 07 AM" src="https://github.com/user-attachments/assets/250fd8d3-f5ac-4f0b-98ce-88ee24fbda16" />
 
-### Step 14 — Test cron without waiting 10 minutes
+### Step 15 — Test cron without waiting 10 minutes
 - Temporarily change to:
 ```bash
 * * * * *
@@ -793,7 +857,7 @@ tail -20 logs/monitor.log
 */10 * * * *
 ```
 
-### Step 15 — Add a .gitignore
+### Step 16 — Add a .gitignore
 - Create
 ```bash
 vi .gitignore
@@ -807,7 +871,7 @@ config/monitor.conf
 ```
 - This is important because you don't want temporary state, logs, or private configuration pushed to GitHub.
 
-### Step 16 — Configure your email
+### Step 17 — Configure your email
 - Edit
 ```bash
 vi config/monitor.con
