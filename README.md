@@ -47,7 +47,7 @@
                 │     Email     │
                 └───────────────┘
 
-```text
+```
 
 ### Step 1 - Create the project
 - Run
