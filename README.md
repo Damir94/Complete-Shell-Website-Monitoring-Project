@@ -1,5 +1,54 @@
 # Complete-Shell-Website-Monitoring-Project
 
+- A lightweight website monitoring system built with Bash and cURL.
+- The system periodically checks multiple websites, validates HTTP status codes, measures response times, detects connectivity and SSL errors, records monitoring history, and sends alerts when failures occur.
+
+## Architecture
+
+```text
+                ┌───────────────┐
+                │     Cron      │
+                │ Every 10 min  │
+                └───────┬───────┘
+                        │
+                        ▼
+                ┌───────────────┐
+                │   monitor.sh  │
+                └───────┬───────┘
+                        │
+                ┌───────▼───────┐
+                │     cURL      │
+                │ HTTP / HTTPS  │
+                └───────┬───────┘
+                        │
+          ┌─────────────┼─────────────┐
+          ▼             ▼             ▼
+      HTTP Code     Curl Exit      Response Time
+          │             │             │
+          └─────────────┼─────────────┘
+                        ▼
+                ┌───────────────┐
+                │ Status Logic  │
+                └───────┬───────┘
+                        │
+            ┌───────────┼───────────┐
+            ▼           ▼           ▼
+           UP          DOWN        SLOW
+            │           │           │
+            └───────────┼───────────┘
+                        ▼
+                ┌───────────────┐
+                │     Logs      │
+                └───────────────┘
+                        │
+                        ▼
+                ┌───────────────┐
+                │    Alerts     │
+                │     Email     │
+                └───────────────┘
+
+```text
+
 ### Step 1 - Create the project
 - Run
 ``` bash
@@ -771,3 +820,21 @@ tmp/
 config/monitor.conf
 ```
 - This is important because you don't want temporary state, logs, or private configuration pushed to GitHub.
+
+### Step 16 — Configure your email
+- Edit
+```bash
+vi config/monitor.con
+```
+- For example
+```bash
+EMAIL_TO="yourname@gmail.com"
+EMAIL_FROM="no-reply@yourdomain.com"
+
+SLOW_THRESHOLD=4
+SLOW_CHECKS=5
+ALERT_INTERVAL=3600
+
+TIMEZONE="America/New_York"
+```
+- Do not commit your real email configuration if you don't want it public.
