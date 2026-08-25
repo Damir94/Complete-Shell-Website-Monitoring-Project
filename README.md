@@ -48,6 +48,8 @@ Built a lightweight Bash-based website monitoring and observability system that 
 
 ```
 🗂️ Project Structure
+
+```bash
 📦 website-monitor
 │
 ├── 🐚 monitor.sh
@@ -72,6 +74,7 @@ Built a lightweight Bash-based website monitoring and observability system that 
 ├── 🚫 .gitignore
 │
 └── 📖 README.md
+```
 ### Step 1 - Create the project
 - Run
 ``` bash
