@@ -663,3 +663,5 @@ chmod +x monitor.sh
 ```bash
 ./monitor.sh
 ```
+
+<img width="1041" height="208" alt="Screenshot 2026-08-25 at 9 43 18 AM" src="https://github.com/user-attachments/assets/896b1a9d-9b69-4733-841a-5cfc0245b38a" />
