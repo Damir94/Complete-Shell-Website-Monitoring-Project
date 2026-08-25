@@ -5,7 +5,7 @@ Built a lightweight Bash-based website monitoring and observability system that 
 ## System Architecture
 
 ```text
-                 ☁️ INTERNET
+                            ☁️ INTERNET
                                   │
                     ┌─────────────┴─────────────┐
                     │                           │
