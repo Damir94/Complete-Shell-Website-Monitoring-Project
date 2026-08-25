@@ -5,7 +5,62 @@ Built a lightweight Bash-based website monitoring and observability system that 
 ## System Architecture
 
 ```text
-                                                                     
+                                                                 ☁️ INTERNET
+                                                                        │
+                                                          ┌─────────────┴─────────────┐
+                                                          │                           │
+                                                          ▼                           ▼
+                                                    🌐 Website 1                🌐 Website 2
+                                                   example.com                 api.example.com
+                                                          │                           │
+                                                          └─────────────┬─────────────┘
+                                                                        │
+                                                                        ▼
+                                                               ⏰ CRON SCHEDULER
+                                                                 Every 10 Minutes
+                                                                        │
+                                                                        ▼
+                                                             ┌─────────────────────┐
+                                                             │   🐚 monitor.sh     │
+                                                             │   Bash Monitoring   │
+                                                             │       Engine        │
+                                                             └──────────┬──────────┘
+                                                                        │
+                                                                        ▼
+                                                             ┌─────────────────────┐
+                                                             │      🔍 cURL        │
+                                                             │   HTTP / HTTPS      │
+                                                             └──────────┬──────────┘
+                                                                        │
+                                                    ┌───────────────────┼───────────────────┐
+                                                    │                   │                   │
+                                                    ▼                   ▼                   ▼
+                                              📡 HTTP Status       🔐 SSL Status      ⚡ Response Time
+                                                    │                   │                   │
+                                                    └───────────────────┼───────────────────┘
+                                                                        │
+                                                                        ▼
+                                                             ┌─────────────────────┐
+                                                             │   🧠 Status Engine  │
+                                                             │                     │
+                                                             │  🟢 UP              │
+                                                             │  🟡 SLOW            │
+                                                             │  🔴 DOWN            │
+                                                             │  ⚠️ HTTP ERROR      │
+                                                             └──────────┬──────────┘
+                                                                        │
+                                                          ┌─────────────┼─────────────┐
+                                                          │             │             │
+                                                          ▼             ▼             ▼
+                                                     📊 Logging     🚨 Alerting    🔄 Recovery
+                                                          │             │             │
+                                                          ▼             ▼             ▼
+                                                    📁 monitor.log  📧 Email      📧 Recovery
+                                                          │             │             │
+                                                          └─────────────┼─────────────┘
+                                                                        │
+                                                                        ▼
+                                                               👨‍💻 DevOps Engineer                                                                
 ```
 🗂️ Project Structure
 
