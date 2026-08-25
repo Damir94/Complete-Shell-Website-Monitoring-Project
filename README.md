@@ -682,8 +682,92 @@ vi config/monitor.conf
 SLOW_THRESHOLD=4
 SLOW_CHECKS=2
 ```
+
+<img width="1023" height="276" alt="Screenshot 2026-08-25 at 9 49 27 AM" src="https://github.com/user-attachments/assets/c67911dd-43f5-44ba-a221-01a21225ed1b" />
+
 - Now a site must be slow twice. After testing, change it back to:
 ```bash
 SLOW_THRESHOLD=4
 SLOW_CHECKS=5
 ```
+
+### Step 12 — Test HTTP failures
+- Change your includes/sites temporarily:
+```bash
+https://example.com
+https://httpstat.us/500
+```
+- Run:
+```bash
+./monitor.sh
+```
+- You should see something similar to:
+
+<img width="1201" height="167" alt="Screenshot 2026-08-25 at 9 53 21 AM" src="https://github.com/user-attachments/assets/132cfa12-605c-45f1-b845-463b10022741" />
+
+- This demonstrates that the script understands the difference between:
+```bash
+HTTP 200 → healthy
+HTTP 500 → server failure
+```
+
+### Step 13 — Add cron automation
+- Open cron:
+```bash
+crontab -e
+```
+- Add:
+```bash
+*/10 * * * * /home/ubuntu/website-monitor/monitor.sh >> /home/ubuntu/website-monitor/logs/cron.log 2>&1
+```
+- Thus means:
+```bash
+*/10 → every 10 minutes
+*    → every hour
+*    → every day
+*    → every month
+*    → every weekday
+```
+- Check the cron job:
+```bash
+crontab -l
+```
+- You should see:
+```bash
+*/10 * * * * /home/ubuntu/website-monitor/monitor.sh >> /home/ubuntu/website-monitor/logs/cron.log 2>&1
+```
+
+<img width="1037" height="116" alt="Screenshot 2026-08-25 at 10 04 07 AM" src="https://github.com/user-attachments/assets/250fd8d3-f5ac-4f0b-98ce-88ee24fbda16" />
+
+### Step 14 — Test cron without waiting 10 minutes
+- Temporarily change to:
+```bash
+* * * * *
+```
+- That runs it every minute.
+- Wait a minute and check:
+```bash
+tail -20 logs/monitor.log
+```
+
+<img width="1223" height="147" alt="Screenshot 2026-08-25 at 10 06 47 AM" src="https://github.com/user-attachments/assets/305a62ab-d9bc-4ce5-9db4-267b107f36bd" />
+
+
+- After confirming it works, change the cron job back to:
+```bash
+*/10 * * * *
+```
+
+### Step 15 — Add a .gitignore
+- Create
+```bash
+vi .gitignore
+```
+- Add:
+```bash
+logs/
+tmp/
+*.log
+config/monitor.conf
+```
+- This is important because you don't want temporary state, logs, or private configuration pushed to GitHub.
