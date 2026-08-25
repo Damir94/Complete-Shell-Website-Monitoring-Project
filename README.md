@@ -47,7 +47,31 @@ Built a lightweight Bash-based website monitoring and observability system that 
                 └───────────────┘
 
 ```
-
+🗂️ Project Structure
+📦 website-monitor
+│
+├── 🐚 monitor.sh
+│   └── Main monitoring engine
+│
+├── ⚙️ config/
+│   ├── monitor.conf
+│   └── monitor.conf.example
+│
+├── 🌐 includes/
+│   └── sites
+│       └── Websites to monitor
+│
+├── 📊 logs/
+│   ├── monitor.log
+│   └── slow/
+│
+├── 🧠 tmp/
+│   └── status/
+│       └── Website state tracking
+│
+├── 🚫 .gitignore
+│
+└── 📖 README.md
 ### Step 1 - Create the project
 - Run
 ``` bash
