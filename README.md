@@ -665,3 +665,25 @@ chmod +x monitor.sh
 ```
 
 <img width="1041" height="208" alt="Screenshot 2026-08-25 at 9 43 18 AM" src="https://github.com/user-attachments/assets/896b1a9d-9b69-4733-841a-5cfc0245b38a" />
+
+### Step 11 — Test slow website monitoring
+- Our configuration currently says:
+```bash
+SLOW_THRESHOLD=4
+SLOW_CHECKS=5
+```
+- That means: A website must take longer than 4 seconds for 5 consecutive checks before we send a slow-site alert.
+- You can temporarily make testing easier:
+```bash
+vi config/monitor.conf
+```
+- Change:
+```bash
+SLOW_THRESHOLD=4
+SLOW_CHECKS=2
+```
+- Now a site must be slow twice. After testing, change it back to:
+```bash
+SLOW_THRESHOLD=4
+SLOW_CHECKS=5
+```
